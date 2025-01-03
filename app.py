@@ -1,75 +1,48 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 import os
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+CORS(app)
 
-# MongoDB Configuration
-MONGO_URI = "your_mongo_connection_string"
+# MongoDB connection
+MONGO_URI = os.getenv("MONGO_URI", "your-default-mongodb-connection-string")
 client = MongoClient(MONGO_URI)
-db = client['notesDB']
-notes_collection = db['notes']
+db = client["notes_db"]  # Database name
+notes_collection = db["notes"]  # Collection name
 
-# File upload configuration
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+@app.route("/")
+def index():
+    return "Welcome to Abhijeet's Notes Sharing Site!"
 
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# Route for uploading notes
-@app.route('/upload', methods=['POST'])
-def upload_note():
-    if 'file' not in request.files or 'title' not in request.form:
-        return jsonify({'error': 'Title and file are required'}), 400
-
-    file = request.files['file']
-    title = request.form['title']
-
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-
-        # Save metadata to MongoDB
-        note = {
-            'title': title,
-            'filename': filename,
-            'file_path': file_path
-        }
-        result = notes_collection.insert_one(note)
-
-        return jsonify({'message': 'Note uploaded successfully', 'note_id': str(result.inserted_id)}), 200
-    else:
-        return jsonify({'error': 'Invalid file type'}), 400
-
-# Route to list all notes
-@app.route('/notes', methods=['GET'])
+@app.route("/api/notes", methods=["GET"])
 def get_notes():
-    notes = []
-    for note in notes_collection.find():
-        notes.append({
-            'id': str(note['_id']),
-            'title': note['title']
-        })
-    return jsonify(notes), 200
+    try:
+        notes = list(notes_collection.find({}, {"_id": 0}))  # Exclude MongoDB's ObjectId
+        return jsonify({"success": True, "notes": notes}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
-# Route to download a note
-@app.route('/download/<note_id>', methods=['GET'])
-def download_note(note_id):
-    note = notes_collection.find_one({'_id': ObjectId(note_id)})
-    if note:
-        return send_file(note['file_path'], as_attachment=True)
-    else:
-        return jsonify({'error': 'Note not found'}), 404
+@app.route("/api/notes", methods=["POST"])
+def upload_note():
+    try:
+        # Parse the incoming data
+        note_data = request.json
+        title = note_data.get("title")
+        content = note_data.get("content")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        if not title or not content:
+            return jsonify({"success": False, "message": "Title and content are required."}), 400
+
+        # Insert note into the database
+        note = {"title": title, "content": content}
+        notes_collection.insert_one(note)
+
+        return jsonify({"success": True, "message": "Note uploaded successfully."}), 201
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == "__main__":
+    # Run the app, configured for Koyeb's environment
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
