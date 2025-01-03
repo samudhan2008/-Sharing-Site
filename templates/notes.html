@@ -3,43 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Notes - Abhijeet's Notes Sharing Site</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>View Notes</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <header>
+        <h1>View Notes</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/upload">Upload Notes</a>
+        </nav>
+    </header>
+    <main>
+        <section id="notesSection">
+            <h2>All Notes</h2>
+            <ul id="notesList"></ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Abhijeet's Notes Sharing Site. All rights reserved.</p>
+    </footer>
+    <script>
+        async function fetchNotes() {
+            const response = await fetch("/api/notes");
+            const result = await response.json();
 
-<header>
-    <h1>Available Notes</h1>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/upload">Upload Notes</a>
-    </nav>
-</header>
+            const notesList = document.getElementById("notesList");
+            notesList.innerHTML = "";
 
-<main>
-    <section class="notes-list">
-        <h2>Explore the Available Notes</h2>
+            if (result.success && result.notes.length > 0) {
+                result.notes.forEach((note) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>${note.title}</strong><br>${note.content}`;
+                    notesList.appendChild(li);
+                });
+            } else {
+                notesList.innerHTML = "<p>No notes available.</p>";
+            }
+        }
 
-        {% if notes %}
-            <div class="notes">
-                {% for note in notes %}
-                    <div class="note-card">
-                        <h3>{{ note.title }}</h3>
-                        <a href="/download/{{ note.id }}">
-                            <button>Download</button>
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>No notes available at the moment. Please check back later.</p>
-        {% endif %}
-    </section>
-</main>
-
-<footer>
-    <p>&copy; 2025 Abhijeet's Notes Sharing Site. All Rights Reserved.</p>
-</footer>
-
+        window.onload = fetchNotes;
+    </script>
 </body>
 </html>
