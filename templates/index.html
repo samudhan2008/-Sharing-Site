@@ -3,26 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhijeet's Notes Sharing Site</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Free Notes Sharing Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #0056b3;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card p {
+            margin: 10px 0;
+        }
+        .card button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .card button:hover {
+            background: #0056b3;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #0056b3;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Abhijeet's Notes Sharing Site</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/upload">Upload Notes</a>
-            <a href="/notes">View Notes</a>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>About</h2>
-            <p>This platform allows you to share and access notes for free. Use the upload feature to contribute your notes, or browse the notes shared by others.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Abhijeet's Notes Sharing Site. All rights reserved.</p>
-    </footer>
+
+<header>
+    <h1>Free Notes Sharing Platform</h1>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#upload">Upload Notes</a>
+    <a href="#browse">Browse Notes</a>
+</nav>
+
+<main>
+    <section id="home">
+        <h2>Welcome to the Free Notes Sharing Platform</h2>
+        <p>Upload and share notes with others for free!</p>
+    </section>
+
+    <section id="upload">
+        <h2>Upload Notes</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" required><br><br>
+            <label for="file">Upload File:</label><br>
+            <input type="file" id="file" name="file" accept=".pdf,.doc,.docx" required><br><br>
+            <button type="submit">Upload</button>
+        </form>
+    </section>
+
+    <section id="browse">
+        <h2>Available Notes</h2>
+        <div class="card">
+            <h3>Introduction to Programming</h3>
+            <p>Pages: 50</p>
+            <button>Download</button>
+        </div>
+        <div class="card">
+            <h3>Advanced Mathematics</h3>
+            <p>Pages: 30</p>
+            <button>Download</button>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 Free Notes Sharing Platform. All Rights Reserved.</p>
+</footer>
+
 </body>
 </html>
