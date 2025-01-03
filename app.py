@@ -41,5 +41,14 @@ def upload_note():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route("/upload")
+def upload_page():
+    return render_template("upload.html")
+
+@app.route("/notes")
+def notes_page():
+    return render_template("notes.html")
+        
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
