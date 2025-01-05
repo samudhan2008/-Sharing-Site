@@ -1,54 +1,54 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
-from pymongo import MongoClient
 import os
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)
 CORS(app)
 
-# MongoDB connection
-MONGO_URI = os.getenv("MONGO_URI", "your-default-mongodb-connection-string")
-client = MongoClient(MONGO_URI)
-db = client["notes_db"]
-notes_collection = db["notes"]
+UPLOAD_FOLDER = 'uploaded_files'
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'ppt', 'pptx'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+# Ensure upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route("/api/notes", methods=["GET"])
-def get_notes():
-    try:
-        notes = list(notes_collection.find({}, {"_id": 0}))
-        return jsonify({"success": True, "notes": notes}), 200
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/api/notes", methods=["POST"])
-def upload_note():
-    try:
-        note_data = request.json
-        title = note_data.get("title")
-        content = note_data.get("content")
+@app.route('/')
+def home_page():
+    return render_template('index.html')
 
-        if not title or not content:
-            return jsonify({"success": False, "message": "Title and content are required."}), 400
-
-        note = {"title": title, "content": content}
-        notes_collection.insert_one(note)
-
-        return jsonify({"success": True, "message": "Note uploaded successfully."}), 201
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
-
-@app.route("/upload")
+@app.route('/upload')
 def upload_page():
-    return render_template("upload.html")
+    return render_template('upload.html')
 
-@app.route("/notes")
+@app.route('/notes')
 def notes_page():
-    return render_template("notes.html")
-        
+    files = os.listdir(UPLOAD_FOLDER)
+    return render_template('notes.html', files=files)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+@app.route('/api/upload-file', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"success": False, "message": "No file part in the request"}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({"success": False, "message": "No file selected"}), 400
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({"success": True, "message": "File uploaded successfully", "filename": filename})
+
+    return jsonify({"success": False, "message": "Invalid file type"}), 400
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
