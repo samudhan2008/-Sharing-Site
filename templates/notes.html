@@ -7,42 +7,14 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <header>
-        <h1>View Notes</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/upload">Upload Notes</a>
-        </nav>
-    </header>
-    <main>
-        <section id="notesSection">
-            <h2>All Notes</h2>
-            <ul id="notesList"></ul>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Abhijeet's Notes Sharing Site. All rights reserved.</p>
-    </footer>
-    <script>
-        async function fetchNotes() {
-            const response = await fetch("/api/notes");
-            const result = await response.json();
-
-            const notesList = document.getElementById("notesList");
-            notesList.innerHTML = "";
-
-            if (result.success && result.notes.length > 0) {
-                result.notes.forEach((note) => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `<strong>${note.title}</strong><br>${note.content}`;
-                    notesList.appendChild(li);
-                });
-            } else {
-                notesList.innerHTML = "<p>No notes available.</p>";
-            }
-        }
-
-        window.onload = fetchNotes;
-    </script>
+    <h1>Available Notes</h1>
+    <ul>
+        {% for file in files %}
+        <li>
+            <a href="/download/{{ file }}">{{ file }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Home</a>
 </body>
 </html>
