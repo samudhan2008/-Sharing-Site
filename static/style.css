@@ -1,13 +1,31 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    color: #333;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+header .logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
 }
 
 h1 {
-    color: #007BFF;
+    color: #ffcc00;
+    font-size: 2.5em;
+    margin-bottom: 10px;
 }
 
 nav {
@@ -15,22 +33,31 @@ nav {
 }
 
 nav a {
-    margin-right: 15px;
+    margin: 0 10px;
+    padding: 10px 20px;
     text-decoration: none;
-    color: #007BFF;
+    background: #ffcc00;
+    color: #1e3c72;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    background: #ffd700;
 }
 
 form {
     margin-top: 20px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    color: #1e3c72;
 }
 
 form label {
     display: block;
     margin-bottom: 10px;
+    font-size: 1.2em;
 }
 
 form input {
@@ -42,14 +69,15 @@ form input {
 
 button {
     padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
+    background-color: #1e3c72;
+    color: #ffffff;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #163a59;
 }
 
 ul {
@@ -62,7 +90,7 @@ ul li {
 }
 
 ul li a {
-    color: #007BFF;
+    color: #ffcc00;
     text-decoration: none;
 }
 
