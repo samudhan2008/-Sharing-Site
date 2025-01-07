@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Welcome to Abhijeet's Notes Sharing Site!</h1>
+    <header>
+        {% if logo_url %}
+        <img src="{{ logo_url }}" alt="Logo" class="logo">
+        {% endif %}
+        <h1>Welcome to Abhijeet's Notes Sharing Site!</h1>
+    </header>
     <nav>
         <a href="/">Home</a>
         <a href="/upload">Upload Notes</a>
