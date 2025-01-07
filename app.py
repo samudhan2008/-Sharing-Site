@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 import os
@@ -18,16 +18,19 @@ def allowed_file(filename):
 
 @app.route('/')
 def home_page():
-    return render_template('index.html')
+    logo_url = os.getenv('TELEGRAPH_LOGO_URL', '')  # Get logo URL from environment variable
+    return render_template('index.html', logo_url=logo_url)
 
 @app.route('/upload')
 def upload_page():
-    return render_template('upload.html')
+    logo_url = os.getenv('TELEGRAPH_LOGO_URL', '')
+    return render_template('upload.html', logo_url=logo_url)
 
 @app.route('/notes')
 def notes_page():
+    logo_url = os.getenv('TELEGRAPH_LOGO_URL', '')
     files = os.listdir(UPLOAD_FOLDER)
-    return render_template('notes.html', files=files)
+    return render_template('notes.html', files=files, logo_url=logo_url)
 
 @app.route('/api/upload-file', methods=['POST'])
 def upload_file():
