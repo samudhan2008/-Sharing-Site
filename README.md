@@ -1,4 +1,4 @@
-# Abhijeet's Notes Sharing Site
+# Notes Sharing Site
 
 ## Overview
 A simple web application for sharing notes. Users can upload and download notes for free.
@@ -12,4 +12,4 @@ A simple web application for sharing notes. Users can upload and download notes 
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/abhijeets-notes-sharing-site.git
-   cd abhijeets-notes-sharing-site
+   cd notes-sharing-site
