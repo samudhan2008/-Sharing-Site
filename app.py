@@ -4,11 +4,18 @@ import os
 
 app = Flask(__name__)
 
-# MongoDB connection
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority")
+# Replace with your actual connection string
+MONGO_URI = "mongodb+srv://scleechadp:scleechadp@site.1n1bj.mongodb.net/?retryWrites=true&w=majority&appName=Site"
+
+# Create the MongoDB client
 client = MongoClient(MONGO_URI)
-db = client['notesdb']
-notes_collection = db['notes']
+
+# Access the database
+db = client.get_database('Site')
+
+# Test the connection
+print("Connected to MongoDB:", db.list_collection_names())
+
 
 # Folder to store uploaded files
 UPLOAD_FOLDER = "uploaded_files"
