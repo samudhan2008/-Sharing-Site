@@ -75,11 +75,16 @@ def download_file(filename):
         if not note:
             return jsonify({"error": "File not found"}), 404
 
+        file_path = note['filepath']
+        if not os.path.exists(file_path):
+            return jsonify({"error": "File does not exist on the server"}), 404
+
         # Send the file for download
-        return send_file(note['filepath'], as_attachment=True)
+        return send_file(file_path, as_attachment=True)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+          
