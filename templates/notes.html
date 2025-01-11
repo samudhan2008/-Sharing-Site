@@ -3,43 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Notes - Abhijeet's Notes Sharing Site</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Available Notes</title>
 </head>
 <body>
-
-<header>
     <h1>Available Notes</h1>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/upload">Upload Notes</a>
-    </nav>
-</header>
-
-<main>
-    <section class="notes-list">
-        <h2>Explore the Available Notes</h2>
-
-        {% if notes %}
-            <div class="notes">
-                {% for note in notes %}
-                    <div class="note-card">
-                        <h3>{{ note.title }}</h3>
-                        <a href="/download/{{ note.id }}">
-                            <button>Download</button>
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>No notes available at the moment. Please check back later.</p>
-        {% endif %}
-    </section>
-</main>
-
-<footer>
-    <p>&copy; 2025 Abhijeet's Notes Sharing Site. All Rights Reserved.</p>
-</footer>
-
+    {% if notes %}
+        <ul>
+            {% for note in notes %}
+                <li>
+                    <a href="/api/download/{{ note.filename }}">{{ note.filename }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notes available.</p>
+    {% endif %}
+    <footer>
+        <p>©2025 SA Studio. All Rights Reserved</p>
+    </footer>
 </body>
 </html>
