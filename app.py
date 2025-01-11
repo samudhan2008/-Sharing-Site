@@ -4,8 +4,11 @@ import os
 
 app = Flask(__name__)
 
-# Replace with your actual connection string
-MONGO_URI = "mongodb+srv://scleechadp:scleechadp@site.1n1bj.mongodb.net/?retryWrites=true&w=majority&appName=Site"
+# Fetch MongoDB URI from environment variables
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    raise ValueError("MONGO_URI environment variable is not set!")
 
 # Create the MongoDB client
 client = MongoClient(MONGO_URI)
@@ -13,9 +16,15 @@ client = MongoClient(MONGO_URI)
 # Access the database
 db = client.get_database('Site')
 
-# Test the connection
-print("Connected to MongoDB:", db.list_collection_names())
+# Access the collection
+notes_collection = db.get_collection('notes')
 
+# Test the connection
+try:
+    print("Connected to MongoDB:", db.list_collection_names())
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
+    raise
 
 # Folder to store uploaded files
 UPLOAD_FOLDER = "uploaded_files"
@@ -74,4 +83,3 @@ def download_file(filename):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-                            
