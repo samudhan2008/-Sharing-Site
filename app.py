@@ -48,10 +48,10 @@ def notes_page():
 def upload_file():
     try:
         if 'file' not in request.files:
-            return jsonify({"error": "No file part"}), 400
+            return render_template("upload_result.html", message="No file part", success=False)
         file = request.files['file']
         if file.filename == '':
-            return jsonify({"error": "No selected file"}), 400
+            return render_template("upload_result.html", message="No selected file", success=False)
 
         filename = file.filename
         file_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -62,10 +62,10 @@ def upload_file():
         # Save metadata to MongoDB
         notes_collection.insert_one({"filename": filename, "filepath": file_path})
 
-        return jsonify({"message": "File uploaded successfully"}), 200
+        return render_template("upload_result.html", message="File uploaded successfully", success=True)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return render_template("upload_result.html", message=f"Error: {str(e)}", success=False)
 
 @app.route('/api/download/<filename>', methods=['GET'])
 def download_file(filename):
